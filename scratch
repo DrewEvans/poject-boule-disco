@@ -1,0 +1,92 @@
+// C++ code
+//
+int Mode = 0;
+
+int capteur1 = 0;
+
+int capteur2 = 0;
+
+int capteur3 = 0;
+
+int proximPolice = 0;
+
+int contactPolice = 0;
+
+int lampDetect = 0;
+
+int counter;
+
+int counter2;
+
+void setup()
+{
+  pinMode(2, INPUT);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(11, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+}
+
+void loop()
+{
+  Mode = digitalRead(2);
+  if (Mode == 1) {
+    for (counter = 0; counter < 30; ++counter) {
+      capteur1 = analogRead(A0);
+      capteur2 = analogRead(A1);
+      capteur3 = analogRead(A2);
+      analogWrite(11, 255);
+      analogWrite(10, 0);
+      analogWrite(9, 0);
+      if (capteur1 <= 300 || (capteur2 < 300 || capteur3 < 300)) {
+        analogWrite(11, 0);
+        analogWrite(10, 0);
+        analogWrite(9, 0);
+        digitalWrite(12, HIGH);
+        digitalWrite(13, HIGH);
+        delay(10000); // Wait for 10000 millisecond(s)
+        digitalWrite(12, LOW);
+        digitalWrite(13, LOW);
+      }
+      delay(200); // Wait for 200 millisecond(s)
+    }
+    analogWrite(11, 155);
+    analogWrite(10, 153);
+    analogWrite(9, 0);
+    delay(4000); // Wait for 4000 millisecond(s)
+    analogWrite(11, 0);
+    analogWrite(10, 255);
+    analogWrite(9, 0);
+    delay(6000); // Wait for 6000 millisecond(s)
+  } else {
+    if (Mode == 0) {
+      analogWrite(11, 0);
+      analogWrite(10, 0);
+      analogWrite(9, 0);
+      lampDetect = analogRead(A3);
+      proximPolice = analogRead(A4);
+      contactPolice = analogRead(A5);
+      if (lampDetect < 300 || (proximPolice < 300 || contactPolice < 300)) {
+        digitalWrite(12, HIGH);
+        digitalWrite(13, HIGH);
+        for (counter2 = 0; counter2 < 5; ++counter2) {
+          analogWrite(11, 255);
+          analogWrite(10, 0);
+          analogWrite(9, 0);
+          delay(300); // Wait for 300 millisecond(s)
+          analogWrite(11, 0);
+          analogWrite(10, 0);
+          analogWrite(9, 0);
+          delay(500); // Wait for 500 millisecond(s)
+        }
+      }
+    }
+  }
+}
